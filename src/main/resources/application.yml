@@ -1,0 +1,29 @@
+server:
+  port: 9090
+spring:
+  application:
+    name: testNavaco
+  datasource:
+    url: jdbc:h2:file:./db/testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+common:
+  retry:
+    enabled: false
+  logging:
+    db:
+      enabled: false
+    console:
+      type: normal
+  exception:
+    db-logging:
+      enabled: false
