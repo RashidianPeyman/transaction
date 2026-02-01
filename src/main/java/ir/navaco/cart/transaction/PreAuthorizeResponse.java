@@ -1,4 +1,5 @@
 package ir.navaco.cart.transaction;
+
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -8,7 +9,9 @@ public record PreAuthorizeResponse(
         BigDecimal amount,
         String currency,
         String issuerId,
-      //  String responseMessage,
+        String rrn,
+
+        //  String responseMessage,
         boolean partialCapturedAllowed,
         Instant authorizationTime
 ) {

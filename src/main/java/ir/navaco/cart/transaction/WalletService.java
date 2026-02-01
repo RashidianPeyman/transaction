@@ -1,5 +1,6 @@
 package ir.navaco.cart.transaction;
 
+
 import ir.navaco.spring.starter.common.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -19,29 +20,29 @@ public class WalletService {
     private final JdbcTemplate jdbcTemplate;
 
     // تعریف RowMapper به صورت دستی برای بالاترین پرفورمنس
-    private final RowMapper<Wallet> walletRowMapper = (rs, rowNum) -> {
-        Wallet wallet = new Wallet();
-        wallet.setId(rs.getLong("id"));
-        wallet.setBalance(rs.getBigDecimal("balance"));
-        wallet.setBlockedBalance(rs.getBigDecimal("blocked_balance"));
-        wallet.setStatus(rs.getString("status"));
-        return wallet;
+    private final RowMapper<Cart> CartRowMapper = (rs, rowNum) -> {
+        Cart cart = new Cart();
+        cart.setId(rs.getLong("id"));
+        cart.setBalance(rs.getBigDecimal("balance"));
+        cart.setBlockedBalance(rs.getBigDecimal("blocked_balance"));
+        cart.setStatus(rs.getString("status"));
+        return cart;
     };
 
     /**
      * مرحله اول: استعلام و رزرو موجودی
      */
     @Transactional
-    public PreAuthorizeResponse preAuthorize(Long walletId, BigDecimal amount) {
+    public PreAuthorizeResponse preAuthorize(Long CartId, BigDecimal amount) {
 
-        String updateWalletSql = """
-                UPDATE wallets 
+        String updateCartSql = """
+                UPDATE Cart 
                 SET balance = balance - ?, 
                     blocked_balance = blocked_balance + ? 
                 WHERE id = ? AND status = 'ACTIVE' AND balance >= ?
                 """;
 
-        int affectedRows = jdbcTemplate.update(updateWalletSql, amount, amount, walletId, amount);
+        int affectedRows = jdbcTemplate.update(updateCartSql, amount, amount, CartId, amount);
         //TODO اگه گفتن میتونم همینجا شماره پیگیری هم بفرستم چک کن
         if (affectedRows == 0) {
             throw new RuntimeException("تراکنش مجاز نیست: موجودی کافی نیست یا کارت غیرفعال است.");
@@ -52,12 +53,12 @@ public class WalletService {
         Long stan = Long.valueOf(Utils.generateStan());
         String authCode = Utils.generateAuthCodeAlphaNumeric();
         String insertTxSql = """
-                INSERT INTO transactions (id, wallet_id, amount, status, created_at) 
+                INSERT INTO transactions (id, Cart_id, amount, status, created_at) 
                 VALUES (?, ?, ?, 'PENDING', CURRENT_TIMESTAMP)
                 """;
-        jdbcTemplate.update(insertTxSql, internalTxId, walletId, amount);
+        jdbcTemplate.update(insertTxSql, internalTxId, CartId, amount);
 
-        PreAuthorizeResponse preAuthorizeResponse = new PreAuthorizeResponse(stan, authCode, amount, "IRR", "014", false, Instant.now());
+        PreAuthorizeResponse preAuthorizeResponse = new PreAuthorizeResponse(stan, authCode, amount, "IRR", "014","RRN" ,false, Instant.now());
 
         return preAuthorizeResponse;
     }
@@ -81,12 +82,12 @@ public class WalletService {
 
         if (updated > 0) {
             // کسر نهایی از مبلغ بلوکه شده
-            String updateWalletSql = """
-                    UPDATE wallets w 
+            String updateCartSql = """
+                    UPDATE Cart w 
                     SET w.blocked_balance = w.blocked_balance - (SELECT t.amount FROM transactions t WHERE t.id = ?)
-                    WHERE w.id = (SELECT t.wallet_id FROM transactions t WHERE t.id = ?)
+                    WHERE w.id = (SELECT t.Cart_id FROM transactions t WHERE t.id = ?)
                     """;
-            int status = jdbcTemplate.update(updateWalletSql, txId, txId);
+            int status = jdbcTemplate.update(updateCartSql, txId, txId);
         } else {
             //TODO چک کن بره تو Settlement یا همینجا مبلغ رو آزاد کنه
         }
@@ -98,40 +99,42 @@ public class WalletService {
 
         if (updated > 0) {
             // بازگرداندن پول از بلوکه به موجودی اصلی
-            String updateWalletSql = """
-                    UPDATE wallets w 
+            String updateCartSql = """
+                    UPDATE Cart w 
                     SET w.balance = w.balance + (SELECT t.amount FROM transactions t WHERE t.id = ?),
                         w.blocked_balance = w.blocked_balance - (SELECT t.amount FROM transactions t WHERE t.id = ?)
-                    WHERE w.id = (SELECT t.wallet_id FROM transactions t WHERE t.id = ?)
+                    WHERE w.id = (SELECT t.Cart_id FROM transactions t WHERE t.id = ?)
                     """;
-            int status = jdbcTemplate.update(updateWalletSql, txId, txId, txId);
+            int status = jdbcTemplate.update(updateCartSql, txId, txId, txId);
         }
     }
 
-    public Wallet getWalletDetails(Long walletId) {
-        String sql = "SELECT id, balance, blocked_balance, status FROM wallets WHERE id = ?";
+    public Cart getCartDetails(Long CartId) {
+        String sql = "SELECT id, balance, blocked_balance, status FROM Cart WHERE id = ?";
 
         try {
             // اینجا دقیقا از RowMapper دستی استفاده می‌کنیم برای بالاترین سرعت
-            return jdbcTemplate.queryForObject(sql, walletRowMapper, walletId);
+            return jdbcTemplate.queryForObject(sql, CartRowMapper, CartId);
         } catch (EmptyResultDataAccessException e) {
             throw new RuntimeException("کیف پول یافت نشد");
         }
     }
 
     @Transactional
-    public WalletResponse handleTransaction(Long walletId, BigDecimal amount) {
-        // ۱. عملیات سنگین و حساس بدون مپر (فقط کوئری اتمیک)
-        String txId = preAuthorize(walletId, amount);
+    public CartResponse handleTransaction(Long CartId, BigDecimal amount) {
+      /*  // ۱. عملیات سنگین و حساس بدون مپر (فقط کوئری اتمیک)
+        String txId = preAuthorize(CartId, amount);
 
         // ۲. حالا برای نمایش به کاربر، دیتا را مپ می‌کنیم و می‌خوانیم
-        Wallet updatedWallet = getWalletDetails(walletId);
+        Cart updatedCart = getCartDetails(CartId);
 
-        return WalletResponse.success(txId, updatedWallet);
+        return CartResponse.success(txId, updatedCart);*/
+
+        return null;
     }
 }
 
 /*
 // هنگام ایجاد کیف پول جدید
-String sql = "INSERT INTO wallets (id, balance, blocked_balance, status) VALUES (wallet_seq.NEXTVAL, ?, ?, ?)";
+String sql = "INSERT INTO Carts (id, balance, blocked_balance, status) VALUES (Cart_seq.NEXTVAL, ?, ?, ?)";
 jdbcTemplate.update(sql, BigDecimal.ZERO, BigDecimal.ZERO, "ACTIVE");*/
