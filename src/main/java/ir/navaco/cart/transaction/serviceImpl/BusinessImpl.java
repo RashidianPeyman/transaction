@@ -2,6 +2,7 @@ package ir.navaco.cart.transaction.serviceImpl;
 
 
 import ir.navaco.cart.transaction.CartTransaction;
+import ir.navaco.cart.transaction.ProcessRequest;
 import ir.navaco.cart.transaction.service.Business;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,8 +23,8 @@ public class BusinessImpl implements Business {
     }
 
     @Transactional
-    public void performDeposit(Long cartId, BigDecimal amount) {
-        cartService.depositCart(cartId, amount, BigDecimal.ZERO);
-        transactionService.
+    public void performDeposit(ProcessRequest request) {
+        cartService.depositCart(request.cartId(), request.amount(), BigDecimal.ZERO);
+        transactionService.performTransaction(request, request.amount(), 0l, 0l);
     }
 }

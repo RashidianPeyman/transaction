@@ -49,6 +49,7 @@ public class TransactionService {
         cartTransaction.setCreditUsed(oldTransaction.getCreditUsed());
         cartTransaction.setCurrency(oldTransaction.getCurrency());
         cartTransaction.setRealUsed(oldTransaction.getRealUsed());
+        cartTransaction.setStan(oldTransaction.getStan());
         cartTransaction.setCartId(oldTransaction.getCartId());
         cartTransaction.setAccountNumber(oldTransaction.getAccountNumber());
         cartTransaction.setAuthCode(oldTransaction.getAuthCode());

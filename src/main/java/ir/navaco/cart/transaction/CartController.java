@@ -39,10 +39,10 @@ public class CartController {
     }
 
 
-    @GetMapping("/deposit")
-    public ResponseEntity<PreAuthorizeResponse> deposit() {
+    @PostMapping("/deposit")
+    public ResponseEntity<PreAuthorizeResponse> deposit(@RequestBody ProcessRequest request) {
         //  return   ResponseEntity.ok(cartService.processTransaction(processRequest));
-        business.performDeposit(1l,new BigDecimal(20202020));
+        business.performDeposit(request);
         return null;
     }
 
