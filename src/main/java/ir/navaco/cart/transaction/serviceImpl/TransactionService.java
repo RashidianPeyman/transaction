@@ -62,7 +62,7 @@ public class TransactionService {
         return cartTransaction;
     }
 
-    private CartTransaction performTransaction(ProcessRequest request, Long newTransactionType, Long majorType) {
+    private CartTransaction performTransaction(ProcessRequest request, Long newTransactionType, Long majorType, BigDecimal realBalance, BigDecimal creditBalance) {
         CartTransaction cartTransaction = new CartTransaction();
         cartTransaction.setRrn(request.rrn());
         //---- به روز رسانی ---
@@ -71,9 +71,12 @@ public class TransactionService {
         //---------------
 
 
-        cartTransaction.setCreditUsed(BigDecimal.ZERO);
         cartTransaction.setCurrency(request.currency());
-        cartTransaction.setRealUsed(request.amount());
+        //--------------  برای تمام حالا قابل در نظر گرفتن --------------
+        cartTransaction.setRealUsed(realBalance);
+        cartTransaction.setCreditUsed(creditBalance);
+
+        cartTransaction.setAmount(request.amount());
         cartTransaction.setCartId(request.cartId());
         cartTransaction.setAuthCode(Utils.generateAuthCodeAlphaNumeric());
         cartTransaction.setStan(Long.valueOf(Utils.generateStan()));
