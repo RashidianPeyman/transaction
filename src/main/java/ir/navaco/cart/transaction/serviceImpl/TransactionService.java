@@ -29,11 +29,11 @@ public class TransactionService {
     }
 
     @Transactional
-    public CartTransaction performTransaction(ProcessRequest processRequest, BigDecimal amount, Long transactionType, Long majorType) {
+    public CartTransaction performTransaction(ProcessRequest processRequest, BigDecimal amount, Long transactionType, Long majorType,BigDecimal realBalance,BigDecimal creditBalance) {
 
         //5 rollback
         //0 deposit
-        CartTransaction newCartTransaction = performTransaction(processRequest, transactionType, majorType);
+        CartTransaction newCartTransaction = performTransaction(processRequest, transactionType, majorType,creditBalance,realBalance);
         return transactionRepository.save(newCartTransaction);
     }
 

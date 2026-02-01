@@ -173,10 +173,14 @@ public class CartService {
     }
 
     @Transactional
-    public Cart debitCart(Long cartId, BigDecimal realAmount, BigDecimal creditAmount) {
+    public Cart debitCart(Long cartId, BigDecimal amount) {
         // 1. پیدا کردن کارت با PESSIMISTIC WRITE (lock ردیف)
         Cart cart = cartRepositoryJpa.findById(cartId)
                 .orElseThrow(() -> new RuntimeException("Cart not found"));
+        if (cart.getCreditBalance().compareTo(amount) > 0) {
+
+        }
+
 
         // 2. بررسی موجودی کافی قبل از کم کردن
         if (cart.getRealBalance().compareTo(realAmount) < 0) {
