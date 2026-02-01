@@ -173,30 +173,29 @@ public class CartService {
     }
 
     @Transactional
-    public Cart debitCart(Long cartId, BigDecimal amount) {
+    public CartDto debitCart(Long cartId, BigDecimal amount) {
         // 1. پیدا کردن کارت با PESSIMISTIC WRITE (lock ردیف)
         Cart cart = cartRepositoryJpa.findById(cartId)
                 .orElseThrow(() -> new RuntimeException("Cart not found"));
-        if (cart.getCreditBalance().compareTo(amount) > 0) {
 
+        CartDto cartDto = new CartDto();
+        if (cart.getCreditBalance().compareTo(amount) >= 0) {
+            cartDto.setCreditBalance(cart.getCreditBalance().subtract(amount));
+            cartDto.setCreditBalance(BigDecimal.ZERO);
+            // ---------    تغییر در کارت -------------
+            cart.setCreditBalance(cart.getCreditBalance().subtract(amount));
+        } else if (cart.getCreditBalance().compareTo(amount) < 0 && cart.getCreditBalance().add(cart.getRealBalance()).compareTo(amount) >= 0) {
+            BigDecimal remainBalance = cart.getRealBalance().subtract(cart.getCreditBalance());
+            cart.setCreditBalance(BigDecimal.ZERO);
+            cart.setRealBalance(cart.getRealBalance().subtract(remainBalance));
+
+            cartDto.setCreditBalance(BigDecimal.ZERO);
+            cartDto.setRealBalance(cart.getRealBalance());
+        } else {
+            throw new RuntimeException(" مبلغ درخواستی از موجودی اعتبار و مانده بیشتر است ");
         }
-
-
-        // 2. بررسی موجودی کافی قبل از کم کردن
-        if (cart.getRealBalance().compareTo(realAmount) < 0) {
-            throw new RuntimeException("Insufficient real balance");
-        }
-
-        if (cart.getCreditBalance().compareTo(creditAmount) < 0) {
-            throw new RuntimeException("Insufficient credit balance");
-        }
-
-        // 3. کم کردن موجودی
-        cart.setRealBalance(cart.getRealBalance().subtract(realAmount));
-        cart.setCreditBalance(cart.getCreditBalance().subtract(creditAmount));
-
-        // 4. ذخیره کارت (اختیاری اگر persistence context فعال است)
-        return cartRepositoryJpa.save(cart);
+        cartRepositoryJpa.save(cart);
+        return cartDto;
     }
 
 

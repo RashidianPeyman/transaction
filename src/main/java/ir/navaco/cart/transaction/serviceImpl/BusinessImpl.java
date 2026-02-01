@@ -31,8 +31,8 @@ public class BusinessImpl implements Business {
 
     @Transactional
     public void performDebit(ProcessRequest request) {
-        cartService.debitCart(request.cartId(), request.amount(), BigDecimal.ZERO);
-        transactionService.performTransaction(request, request.amount(), 0l, 0l, request.amount(),BigDecimal.ZERO);
+        CartDto cartDto = cartService.debitCart(request.cartId(), request.amount());
+        transactionService.performTransaction(request, request.amount(), 0l, 0l, cartDto.getRealBalance(), cartDto.getCreditBalance());
     }
 
 
