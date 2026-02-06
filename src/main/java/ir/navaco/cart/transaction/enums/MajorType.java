@@ -19,7 +19,7 @@ public enum MajorType {
         return title;
     }
 
-    public static TransactionType fromCode(int code) {
+  /*  public static TransactionType fromCode(int code) {
 
-    }
+    }*/
 }

@@ -1,7 +1,7 @@
 package ir.navaco.cart.transaction;
 
 
-import ir.navaco.spring.starter.common.Utils;
+import ir.navaco.spring.starter.common.GeneralUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -50,8 +50,8 @@ public class WalletService {
 
         // ۲. ثبت تراکنش در وضعیت PENDING
         String internalTxId = UUID.randomUUID().toString();
-        Long stan = Long.valueOf(Utils.generateStan());
-        String authCode = Utils.generateAuthCodeAlphaNumeric();
+        Long stan = Long.valueOf(GeneralUtils.generateStan());
+        String authCode = GeneralUtils.generateAuthCodeAlphaNumeric();
         String insertTxSql = """
                 INSERT INTO transactions (id, Cart_id, amount, status, created_at) 
                 VALUES (?, ?, ?, 'PENDING', CURRENT_TIMESTAMP)

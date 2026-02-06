@@ -3,7 +3,7 @@ package ir.navaco.cart.transaction.serviceImpl;
 import ir.navaco.cart.transaction.*;
 import ir.navaco.cart.transaction.queries.CartSql;
 import ir.navaco.cart.transaction.repositories.CartRepositoryJpa;
-import ir.navaco.spring.starter.common.Utils;
+import ir.navaco.spring.starter.common.GeneralUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -48,8 +48,8 @@ public class CartService {
         cartChecking(processRequest);
 
         // ۲. ثبت تراکنش در وضعیت PENDING
-        Long stan = Long.valueOf(Utils.generateStan());
-        String authCode = Utils.generateAuthCodeAlphaNumeric();
+        Long stan = Long.valueOf(GeneralUtils.generateStan());
+        String authCode = GeneralUtils.generateAuthCodeAlphaNumeric();
         String id = UUID.randomUUID().toString();
         String insertTxSql = """
                 INSERT INTO transactions (id, account_number, amount,stan,rrn,auth_code,mcc,currency,transaction_type, terminal_id, merchant_id, status, created_at) 
@@ -136,8 +136,8 @@ public class CartService {
             throw new RuntimeException("dd------------------");
         }
 
-        String authCode = Utils.generateAuthCodeAlphaNumeric();
-        Long stan = Long.valueOf(Utils.generateStan());
+        String authCode = GeneralUtils.generateAuthCodeAlphaNumeric();
+        Long stan = Long.valueOf(GeneralUtils.generateStan());
         // --------------------------
         // 3. Insert تراکنش
         // --------------------------

@@ -33,8 +33,13 @@
         <dependency>
             <groupId>ir.navaco.spring.starter</groupId>
             <artifactId>common</artifactId>
-            <version>0.0.1</version>
+            <version>0.0.2</version>
         </dependency>
+    <!--    <dependency>
+            <groupId>dev.peyman</groupId>
+            <artifactId>framework</artifactId>
+            <version>0.0.1</version>
+        </dependency>-->
 
         <dependency>
             <groupId>org.projectlombok</groupId>

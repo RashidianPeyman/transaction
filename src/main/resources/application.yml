@@ -27,3 +27,12 @@ common:
   exception:
     db-logging:
       enabled: false
+bank:
+    logging:
+      fixed-delay: 63072000000
+
+custom:
+  security:
+    jwt:
+      expiration: 63072000000
+

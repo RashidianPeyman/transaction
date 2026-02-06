@@ -46,4 +46,19 @@ public class CartController {
         return null;
     }
 
+    @GetMapping("/test")
+    public ResponseEntity<String> test(@RequestParam String text) {
+        //  return   ResponseEntity.ok(cartService.processTransaction(processRequest));
+
+        return ResponseEntity.ok(text);
+    }
+
+    @PostMapping("/post")
+    public ResponseEntity<String> postTest(@RequestBody ProcessRequest processRequest) {
+        //  return   ResponseEntity.ok(cartService.processTransaction(processRequest));
+
+        return ResponseEntity.ok(processRequest.currency());
+    }
+
+
 }

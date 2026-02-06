@@ -3,7 +3,7 @@ package ir.navaco.cart.transaction.serviceImpl;
 import ir.navaco.cart.transaction.CartTransaction;
 import ir.navaco.cart.transaction.ProcessRequest;
 import ir.navaco.cart.transaction.repositories.TransactionRepository;
-import ir.navaco.spring.starter.common.Utils;
+import ir.navaco.spring.starter.common.GeneralUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,8 +78,8 @@ public class TransactionService {
 
         cartTransaction.setAmount(request.amount());
         cartTransaction.setCartId(request.cartId());
-        cartTransaction.setAuthCode(Utils.generateAuthCodeAlphaNumeric());
-        cartTransaction.setStan(Long.valueOf(Utils.generateStan()));
+        cartTransaction.setAuthCode(GeneralUtils.generateAuthCodeAlphaNumeric());
+        cartTransaction.setStan(Long.valueOf(GeneralUtils.generateStan()));
         cartTransaction.setMcc(request.mcc());
         cartTransaction.setMerchantId(request.merchantId());
         cartTransaction.setTerminalId(request.terminalId());
