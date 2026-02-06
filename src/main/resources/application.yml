@@ -29,10 +29,15 @@ common:
       enabled: false
 bank:
     logging:
-      fixed-delay: 63072000000
+      fixed-delay: 500000
 
 custom:
   security:
     jwt:
       expiration: 63072000000
+
+security:
+  module:
+    enabled: true
+
 

@@ -1,6 +1,6 @@
 package ir.navaco.cart.transaction;
 
-//import dev.peyman.framework.JwtService;
+import dev.peyman.framework.JwtService;
 import ir.navaco.cart.transaction.serviceImpl.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -18,18 +18,18 @@ import java.util.Map;
 @RestController
 public class TransactionApplication {
 
-/*    @Autowired
-    private JwtService jwtService;*/
+    @Autowired
+    private JwtService jwtService;
+
     public static void main(String[] args) {
         SpringApplication.run(TransactionApplication.class, args);
     }
 
-/*
     @GetMapping("auth/generate-test-token")
     public String generate(@RequestParam String name) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("roles", List.of("ROLE_USER"));
 
         return jwtService.generateToken(name, claims);
-    }*/
+    }
 }
